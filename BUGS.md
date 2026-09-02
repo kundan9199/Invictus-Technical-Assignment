@@ -95,3 +95,18 @@ The app saves `Date` objects into local storage by serializing them to strings, 
 I changed the state loader to normalize saved expense dates back into `Date` objects before returning the state. This keeps the persisted data consistent with the rest of the app and restores correct sorting and display behavior after reloads.
 
 ---
+
+## Bug 8
+
+**How to reproduce:**  
+1. Open the app and add a new member from the Summary card.  
+2. Immediately go to the Add expense form and create a new expense.  
+3. The new member is present in the payer dropdown, but they are not included in the default split selection and their percentage row is missing from the custom split UI unless you manually reselect them.
+
+**What is wrong:**  
+The add-expense form keeps stale split state after the members list changes. When a new member is added, the form does not resync its selected participants or percentage values to the current members list, so the newly added person is excluded from the expense split even though they are now part of the group.
+
+**What I changed:**  
+I added a synchronization effect so the form validates and updates the payer and split selections whenever the member list changes. This keeps the form’s chosen participants aligned with the current app state and ensures new members are included in the default split.
+
+---

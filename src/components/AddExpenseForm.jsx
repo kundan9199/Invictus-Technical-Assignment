@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { percentsSumTo100 } from "../lib/money.js";
 
 const CATEGORIES = ["Food", "Travel", "Fun", "Stay"];
@@ -28,6 +28,31 @@ export default function AddExpenseForm({ members, onAdd }) {
     () => members.filter((m) => splitWith.includes(m.id)),
     [members, splitWith]
   );
+
+  useEffect(() => {
+    const validIds = new Set(members.map((m) => m.id));
+    setPaidBy((prev) => {
+      if (prev === "" || members.some((m) => m.id === Number(prev))) return prev;
+      return members[0]?.id ?? "";
+    });
+    setSplitWith((prev) => {
+      const next = prev.filter((id) => validIds.has(id));
+      const all = members.map((m) => m.id);
+      return next.length === all.length ? next : all;
+    });
+    setPercents((prev) => {
+      const next = {};
+      for (const m of members) {
+        if (Object.prototype.hasOwnProperty.call(prev, m.id)) {
+          next[m.id] = prev[m.id];
+        }
+      }
+      if (Object.keys(next).length === 0) {
+        return evenPercents(members.map((m) => m.id));
+      }
+      return next;
+    });
+  }, [members]);
 
   function toggleMember(id) {
     setSplitWith((prev) => {
