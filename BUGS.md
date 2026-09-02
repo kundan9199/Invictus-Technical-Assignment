@@ -48,3 +48,18 @@ The Paid by filter is comparing a numeric member ID from each expense to a strin
 I normalized the selected value to a number before comparing it to each expense’s `paidBy` field. This keeps the filter logic consistent with the actual member IDs stored in the app and makes the payer filter match the correct expenses.
 
 ---
+
+## Bug 4
+
+**How to reproduce:**  
+1. Open the app and look at the seeded expense "Uber to airport".  
+2. Notice that Diya Patel paid the bill, but the selected split is only Aisha Khan and Ben Okonkwo.  
+3. Check the balances panel: Diya Patel is shown as owing money instead of being owed the full fare.
+
+**What is wrong:**  
+When the payer is not included in the split, the balance logic wrongly subtracts the payer’s share from the amount they paid. That makes the person who paid appear to owe money, even though they should be reimbursed in full for a bill they paid for other people.
+
+**What I changed:**  
+I removed the extra deduction from the payer when they are not part of the split. The app now credits the payer for the full amount they paid and only subtracts the shares from the actual people who were on the invoice.
+
+---
