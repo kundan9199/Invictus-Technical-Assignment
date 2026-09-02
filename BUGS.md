@@ -13,8 +13,8 @@ Keep this file in the repo and **commit it** with your fixes.
 **What is wrong:** The list is showing oldest expenses first. Newest should be at the top.
 
 **What I changed:** I Changed the expense sorting order to display the newest expenses first by sorting dates in descending order.
-from this - const sorted = [...expenses].sort((a, b) => dateValue(a.date) - dateValue(b.date));
-to this - const sorted = [...expenses].sort((a, b) => dateValue(b.date) - dateValue(a.date));
+1. From this - const sorted = [...expenses].sort((a, b) => dateValue(a.date) - dateValue(b.date));
+2. To this - const sorted = [...expenses].sort((a, b) => dateValue(b.date) - dateValue(a.date));
 
 ---
 
@@ -49,17 +49,18 @@ I normalized the selected value to a number before comparing it to each expense�
 
 ---
 
-## Bug 4
+## Bug 5
 
 **How to reproduce:**  
-1. Open the app and look at the seeded expense "Uber to airport".  
-2. Notice that Diya Patel paid the bill, but the selected split is only Aisha Khan and Ben Okonkwo.  
-3. Check the balances panel: Diya Patel is shown as owing money instead of being owed the full fare.
+1. Create a new expense for $100.  
+2. Set the split to equal between three people.  
+3. Save the expense and inspect the per-person shares or the resulting balances.  
+4. The shares do not total the original amount; they are $33.33 + $33.33 + $33.33 = $99.99.
 
 **What is wrong:**  
-When the payer is not included in the split, the balance logic wrongly subtracts the payer’s share from the amount they paid. That makes the person who paid appear to owe money, even though they should be reimbursed in full for a bill they paid for other people.
+The equal-split logic rounds each share independently to two decimals, so the total is short by a cent every time the amount is not divisible evenly by the number of people. This violates the app’s rule that the group should not “lose” or “invent” money in rounding.
 
 **What I changed:**  
-I removed the extra deduction from the payer when they are not part of the split. The app now credits the payer for the full amount they paid and only subtracts the shares from the actual people who were on the invoice.
+I changed the equal-split calculation to allocate the total bill in cents and distribute any leftover cent across the first participants, so the sum of the shares exactly matches the original amount while keeping the shares as even as possible.
 
 ---
