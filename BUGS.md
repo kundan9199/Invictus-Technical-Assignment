@@ -64,3 +64,19 @@ The equal-split logic rounds each share independently to two decimals, so the to
 I changed the equal-split calculation to allocate the total bill in cents and distribute any leftover cent across the first participants, so the sum of the shares exactly matches the original amount while keeping the shares as even as possible.
 
 ---
+
+## Bug 6
+
+**How to reproduce:**  
+1. Open the app with the seeded data.  
+2. Look at the Balances panel.  
+3. Find a member who has paid more than their share, such as Diya Patel on the Uber to airport bill.  
+4. The panel says they "owes" money even though they should be in credit.
+
+**What is wrong:**  
+The balance labels are reversed. Positive balances are treated as debtors and negative balances as creditors, but the app’s own data model defines positive balances as money that is owed to the member and negative balances as money the member owes. The UI therefore tells the user the opposite of the actual status.
+
+**What I changed:**  
+I swapped the positive and negative balance conditions in the panel so that a positive balance displays as "is owed" and a negative balance displays as "owes". This matches the actual calculation and the balance semantics used elsewhere in the app.
+
+---
