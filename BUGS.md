@@ -12,7 +12,7 @@ Keep this file in the repo and **commit it** with your fixes.
 
 **What is wrong:** The list is showing oldest expenses first. Newest should be at the top.
 
-**What I changed:**
+**What I changed:** Changed the expense sorting order to display the newest expenses first by sorting dates in descending order.
 
 ---
 
