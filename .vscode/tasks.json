@@ -1,0 +1,11 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Check shell",
+			"type": "shell",
+			"command": "echo hi",
+			"isBackground": false
+		}
+	]
+}
