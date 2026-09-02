@@ -80,3 +80,18 @@ The balance labels are reversed. Positive balances are treated as debtors and ne
 I swapped the positive and negative balance conditions in the panel so that a positive balance displays as "is owed" and a negative balance displays as "owes". This matches the actual calculation and the balance semantics used elsewhere in the app.
 
 ---
+
+## Bug 7
+
+**How to reproduce:**  
+1. Open the app and add or edit an expense.  
+2. Refresh the page or reopen the app after the data has been saved in browser storage.  
+3. The expense list still appears, but the date sorting and date formatting no longer behave correctly for the saved expenses.
+
+**What is wrong:**  
+The app saves `Date` objects into local storage by serializing them to strings, but when it reloads the state it returns the raw JSON without converting those stored date strings back into `Date` objects. The code later treats those strings as if they were real dates, so date comparisons and display logic can break after a reload.
+
+**What I changed:**  
+I changed the state loader to normalize saved expense dates back into `Date` objects before returning the state. This keeps the persisted data consistent with the rest of the app and restores correct sorting and display behavior after reloads.
+
+---
